@@ -1,0 +1,14 @@
+{
+    // 东京放课后召唤师（Housamo / 東京放課後サモナーズ）
+    // 开发与发行：Lifewonders, LLC
+    // 包名：jp.co.lifewonders.housamo（已核实）
+    // 引擎：Unity（Exodus 静态分析检出 Unity3d Ads 签名）
+    // 横屏：MAH 强制要求 16:9 的 1280x720，因此判定为横屏
+    // 自动化价值：游戏本体无内置自动战斗，是最值得做的一款
+    // 上游可参考：https://github.com/Quartewe/MAH （MIT）
+    "Housamo_StartUp": {
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+        // TODO: 补 StartApp（package = jp.co.lifewonders.housamo）与主界面等待
+    }
+}

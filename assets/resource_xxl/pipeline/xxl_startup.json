@@ -1,0 +1,14 @@
+{
+    // XXL 猛汉特区（XXL WOOFIA / 繁中：XXL 猛漢町 / 日文：XXL 漢気二丁目）
+    // 发行：PlayHorny（R18 完整版）/ Mega Games（应用商店健全版）
+    // TODO 待实测确认：
+    //   1. PlayHorny 版真实包名（Google Play 版为 com.megagames.xxlwoofia）
+    //   2. 横屏还是竖屏（决定本实例锁 1280x720 还是 720x1280）
+    //   3. 自带挂机是否会周期性弹窗
+    //   4. 界面语言（决定 OCR 词表用简体还是繁体）
+    "XXL_StartUp": {
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+        // TODO: 包名确认后改为 StartApp，并接上等待主界面的节点
+    }
+}

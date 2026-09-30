@@ -1,109 +1,121 @@
 {
-    // 本文件主要定义了通用 UI 的行为和显示内容
-    // 可参考文档和示例添加更多您需要的功能
-    // 文档：https://maafw.xyz/docs/3.3-ProjectInterfaceV2
-    // 示例：https://github.com/MaaXYZ/MaaFramework/blob/main/sample/interface.json
+    // MaaGeikomi —— 四合一护肝助手
+    // 协议文档：https://maafw.com/docs/3.3-ProjectInterfaceV2
+    // 注意：Adb 控制器的截图/输入方式由 MaaFramework 自动择优，
+    //       但 MuMu 12 的截图增强必须在通用 UI 或调试脚本里显式传
+    //       {"extras":{"mumu":{"enable":true,"path":"<MuMu 安装目录>"}}}
+    //       否则会回退到 adb 截图（实测 237ms/帧 vs 增强通道 7.2ms/帧）。
     "interface_version": 2,
-    "name": "MaaXXX",
-    "description": "这是一个使用 MaaFramework 创建的新项目。",
-    "contact": "QQ群: 123456789",
+    "name": "MaaGeikomi",
+    "description": "MaaFramework 驱动的四合一护肝助手：XXL 猛汉特区 / 东京放课后召唤师 / Live A Hero / 神绊的导师。",
+    "contact": "https://github.com/Kilohoflipped/MaaGeikomi/issues",
     "license": "MIT",
-    "welcome": "首次使用！欢迎使用 MAA!",
-    // 填写项目地址和版本号可实现自动更新功能
-    "github": "https://github.com/MaaXYZ/MaaPracticeBoilerplate",
-    "version": "1.0.0",
-    // Mirror酱为第三方分发服务，新项目默认关闭
-    // 若有需要请联系 Mirror酱 开通，直接自行开启是无法使用的
-    // "mirrorchyan_rid": "MaaXXX",
-    // "mirrorchyan_multiplatform": true,
+    "welcome": "欢迎使用 MaaGeikomi。首次使用请先确认三件事：一，游戏已装进模拟器；二，模拟器分辨率为 1280x720 横屏（Live A Hero 为 720x1280 竖屏）；三，若使用 MuMu 12，请在通用 UI 中开启 MuMu 截图增强，否则每一帧截图会慢三十倍。",
+    "github": "https://github.com/Kilohoflipped/MaaGeikomi",
+    "version": "0.1.0",
     "controller": [
         {
             "name": "安卓端",
+            "label": "安卓模拟器",
             "type": "Adb",
-            "display_short_side": 720 // 默认缩放分辨率的短边长度
-        },
-        {
-            "name": "桌面端",
-            "type": "Win32",
-            "win32": {
-                "class_regex": ".*",
-                "window_regex": "Visual Studio",
-                // 截图及控制方式，请根据项目实际情况修改
-                // 文档: https://maafw.xyz/docs/2.4-ControlMethods
-                "screencap": "PrintWindow", // 截图方式
-                "mouse": "PostMessageWithCursorPos", // 鼠标控制方式
-                "keyboard": "PostMessageWithCursorPos" // 键盘控制方式
-            }
+            "display_short_side": 720
         }
     ],
     "resource": [
         {
-            "name": "官服",
+            "name": "XXL",
+            "label": "XXL 猛汉特区",
             "path": [
-                "./resource"
+                "./resource",
+                "./resource_xxl"
             ]
         },
         {
-            "name": "B 服",
+            "name": "Housamo",
+            "label": "东京放课后召唤师",
             "path": [
-                "./resource"
-                // "./resource_bilibili"
+                "./resource",
+                "./resource_housamo"
+            ]
+        },
+        {
+            "name": "LAH",
+            "label": "Live A Hero",
+            "path": [
+                "./resource",
+                "./resource_lah"
+            ]
+        },
+        {
+            "name": "Crave",
+            "label": "神绊的导师",
+            "path": [
+                "./resource",
+                "./resource_crave"
             ]
         }
     ],
-    // 可选的 agent 示例
-    // "agent": {
-    //     "child_exec": "python",
-    //     "child_args": [
-    //         "./agent/main.py"
-    //     ]
-    // },
+    "group": [
+        {
+            "name": "xxl",
+            "label": "XXL 猛汉特区"
+        },
+        {
+            "name": "housamo",
+            "label": "东京放课后召唤师"
+        },
+        {
+            "name": "lah",
+            "label": "Live A Hero"
+        },
+        {
+            "name": "crave",
+            "label": "神绊的导师"
+        }
+    ],
+    // 当前为骨架：每个游戏只有一个启动占位节点，任务名与 pipeline 节点一一对应。
+    // 节点命名统一使用 <游戏前缀>_ 前缀，公共节点使用 Common_ 前缀，避免资源包互相覆盖。
     "task": [
         {
-            "name": "普通任务",
-            "entry": "MyTask1"
-        },
-        {
-            "name": "选项任务",
-            "entry": "MyTask2",
-            "option": [
-                "任务选项1"
-            ]
-        },
-        {
-            "name": "参数任务",
-            "entry": "MyTask3",
-            "option": [
-                "任务选项1"
+            "name": "启动游戏（XXL）",
+            "entry": "XXL_StartUp",
+            "group": [
+                "xxl"
             ],
-            "pipeline_override": {}
+            "default_check": true,
+            "resource": [
+                "XXL"
+            ]
         },
         {
-            "name": "自定义识别与动作示例",
-            "entry": "FindSmallestNumber"
-        }
-    ],
-    "option": {
-        "任务选项1": {
-            "type": "select",
-            "cases": [
-                {
-                    "name": "文本1",
-                    "pipeline_override": {
-                        "OcrTask": {
-                            "text": "文本1"
-                        }
-                    }
-                },
-                {
-                    "name": "文本2",
-                    "pipeline_override": {
-                        "OcrTask": {
-                            "text": "文本2"
-                        }
-                    }
-                }
+            "name": "启动游戏（Housamo）",
+            "entry": "Housamo_StartUp",
+            "group": [
+                "housamo"
+            ],
+            "resource": [
+                "Housamo"
+            ]
+        },
+        {
+            "name": "启动游戏（Live A Hero）",
+            "entry": "LAH_StartUp",
+            "group": [
+                "lah"
+            ],
+            "resource": [
+                "LAH"
+            ]
+        },
+        {
+            "name": "启动游戏（神绊的导师）",
+            "entry": "Crave_StartUp",
+            "group": [
+                "crave"
+            ],
+            "resource": [
+                "Crave"
             ]
         }
-    }
+    ]
 }

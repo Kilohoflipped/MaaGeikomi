@@ -1,0 +1,10 @@
+{
+    // 公共资源包（assets/resource）——四款游戏共用的节点放这里。
+    // 命名约定：公共节点统一使用 Common_ 前缀，游戏节点使用 XXL_ / Housamo_ / LAH_ / Crave_ 前缀。
+    // 加载顺序为 ./resource 在前、游戏包在后，同名节点会被游戏包覆盖，所以前缀不能省。
+    "Common_Noop": {
+        "recognition": "DirectHit",
+        "action": "DoNothing"
+        // 占位节点：用于在没有真实界面素材时跑通流水线。
+    }
+}
