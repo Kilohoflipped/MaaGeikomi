@@ -1,18 +1,15 @@
 {
     // MaaGeikomi —— 四合一护肝助手
     // 协议文档：https://maafw.com/docs/3.3-ProjectInterfaceV2
-    // 注意：Adb 控制器的截图/输入方式由 MaaFramework 自动择优，
-    //       但 MuMu 12 的截图增强必须在通用 UI 或调试脚本里显式传
-    //       {"extras":{"mumu":{"enable":true,"path":"<MuMu 安装目录>"}}}
-    //       否则会回退到 adb 截图（实测 237ms/帧 vs 增强通道 7.2ms/帧）。
+    // 注意：Adb 控制器的截图/输入方式由 MaaFramework 自动择优
     "interface_version": 2,
     "name": "MaaGeikomi",
     "description": "MaaFramework 驱动的四合一护肝助手：XXL 猛汉特区 / 东京放课后召唤师 / Live A Hero / 神绊的导师。",
     "contact": "https://github.com/Kilohoflipped/MaaGeikomi/issues",
     "license": "MIT",
-    "welcome": "欢迎使用 MaaGeikomi。首次使用请先确认三件事：一，游戏已装进模拟器；二，模拟器分辨率为 1280x720 横屏（Live A Hero 为 720x1280 竖屏）；三，若使用 MuMu 12，请在通用 UI 中开启 MuMu 截图增强，否则每一帧截图会慢三十倍。",
+    "welcome": "欢迎使用 MaaGeikomi 四合一护肝助手！",
     "github": "https://github.com/Kilohoflipped/MaaGeikomi",
-    "version": "0.1.0",
+    "version": "0.0.1",
     "controller": [
         {
             "name": "安卓端",
@@ -73,22 +70,25 @@
             "label": "神绊的导师"
         }
     ],
-    // 当前为骨架：每个游戏只有一个启动占位节点，任务名与 pipeline 节点一一对应。
     // 节点命名统一使用 <游戏前缀>_ 前缀，公共节点使用 Common_ 前缀，避免资源包互相覆盖。
     "task": [
         {
-            "name": "启动游戏（XXL）",
-            "entry": "XXL_StartUp",
+            "name": "XXL_StartUp",
+            "label": "启动XXL 猛汉特区",
+            "description": "启动游戏",
+            "entry": "XXL_LaunchApp",
             "group": [
                 "xxl"
             ],
-            "default_check": true,
+            "default_check": false,
             "resource": [
                 "XXL"
             ]
         },
         {
-            "name": "启动游戏（Housamo）",
+            "name": "Housamo_StartUp",
+            "label": "启动东京放课后召唤师",
+            "description": "启动游戏",
             "entry": "Housamo_StartUp",
             "group": [
                 "housamo"
@@ -98,7 +98,9 @@
             ]
         },
         {
-            "name": "启动游戏（Live A Hero）",
+            "name": "LAH_StartUp",
+            "label": "启动Live A Hero",
+            "description": "启动游戏",
             "entry": "LAH_StartUp",
             "group": [
                 "lah"
@@ -108,7 +110,9 @@
             ]
         },
         {
-            "name": "启动游戏（神绊的导师）",
+            "name": "Crave_StartUp",
+            "label": "启动神绊的导师",
+            "description": "启动游戏",
             "entry": "Crave_StartUp",
             "group": [
                 "crave"

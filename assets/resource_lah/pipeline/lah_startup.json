@@ -1,15 +1,17 @@
 {
     // Live A Hero（LIVE A HERO -ライブ・ア・ヒーロー！-）
     // 开发与发行：Lifewonders, LLC
-    // 包名：jp.co.lifewonders.liveahero（已核实）
-    // 竖屏：需要单独的 720x1280 实例，模板体系与本仓其他三款不通用
-    // 注意：官方支援信息标注 Intel CPU 机型无法应对，x86 模拟器上必须先实测能否正常启动
-    // TODO 待实测确认：
-    //   1. x86_64 模拟器能否启动
-    //   2. 主界面结构与每日三条任务的入口
+    // 包名：jp.co.lifewonders.liveahero
+    // 竖屏 720x1280
+    // TODO：
+    //   主界面结构与每日三条任务的入口
     "LAH_StartUp": {
         "recognition": "DirectHit",
-        "action": "DoNothing"
-        // TODO: 补 StartApp（package = jp.co.lifewonders.liveahero）与主界面等待
+        "action": {
+            "type": "StartApp",
+            "param": {
+                "package": "jp.co.lifewonders.liveahero"
+            }
+        }
     }
 }

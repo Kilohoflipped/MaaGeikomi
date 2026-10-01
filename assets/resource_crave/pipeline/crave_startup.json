@@ -1,19 +1,19 @@
 {
     // 神绊的导师（クレイヴ・サーガ 神絆の導師 / Crave Saga）
     // 日服：EXNOA（DMM GAMES / FANZA），浏览器游戏 + DMM GAME APP PLAYER
-    // 中文服：EROLABS《神絆的導師 X》独立 APK（本项目选定该客户端）
-    // 引擎：未证实
-    // 分辨率：现有上游项目 MaaCraveSaga 只适配 1280x720 320dpi（横屏）
-    // 自动化价值：游戏内置自動周回 + 跳过券，刷本价值低，
-    //             空白集中在无限池抽票、五种商店兑换、探索派遣
-    // 上游可参考：https://github.com/BryanChiao/MaaCraveSaga （PI v1 格式，需要迁移）
-    // TODO 待实测确认：
-    //   1. EROLABS 版真实包名（形如 com.xxx.yyy.erolabs）
-    //   2. 首次启动是否需要 EROLABS 账号登录或更新检查
-    //   3. 现有台服模板能否直接复用
+    // 台服：EROLABS《神絆の導師 X》独立 APK
+    // 引擎：Cocos2d-x（JS 绑定）
+    // 包名：games.johren.cravesaga.erolabsch.gg_x_a
+    // 竖屏 720x1280
+    // TODO：
+    //   登录后的弹窗链（登录奖励 3 页 → 特别礼包 1/14 → 受到应援确认）形式确认
     "Crave_StartUp": {
         "recognition": "DirectHit",
-        "action": "DoNothing"
-        // TODO: 补 StartApp 与主界面等待
+        "action": {
+            "type": "StartApp",
+            "param": {
+                "package": "games.johren.cravesaga.erolabsch.gg_x_a"
+            }
+        }
     }
 }

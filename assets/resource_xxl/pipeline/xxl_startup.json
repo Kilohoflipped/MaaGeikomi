@@ -1,14 +1,214 @@
 {
     // XXL 猛汉特区（XXL WOOFIA / 繁中：XXL 猛漢町 / 日文：XXL 漢気二丁目）
     // 发行：PlayHorny（R18 完整版）/ Mega Games（应用商店健全版）
-    // TODO 待实测确认：
-    //   1. PlayHorny 版真实包名（Google Play 版为 com.megagames.xxlwoofia）
-    //   2. 横屏还是竖屏（决定本实例锁 1280x720 还是 720x1280）
-    //   3. 自带挂机是否会周期性弹窗
-    //   4. 界面语言（决定 OCR 词表用简体还是繁体）
-    "XXL_StartUp": {
+    // 包名：PlayHorny 渠道版 com.nightfun.xxlwoofia ；Google Play 健全版 com.megagames.xxlwoofia
+    // 启动 Activity：com.nightfun.xxlwoofia/com.sgarts.DynamicAppIcon.ai72000
+    // 画面：竖屏 720x1280
+    // 引擎：Unity + IL2CPP
+    // 界面语言：跟随实例系统语言
+    "XXL_LaunchApp": {
         "recognition": "DirectHit",
-        "action": "DoNothing"
-        // TODO: 包名确认后改为 StartApp，并接上等待主界面的节点
+        "action": {
+            "type": "StartApp",
+            "param": {
+                "package": "com.nightfun.xxlwoofia"
+            }
+        },
+        "next": ["XXL_WaitTitleScreen"]
+    },
+    "XXL_WaitTitleScreen": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": ["TAP TO START"],
+                "roi": [
+                    227,
+                    1156,
+                    267,
+                    47
+                ]
+            }
+        },
+        "action": "DoNothing",
+        "timeout": 120000,
+        "next": ["XXL_TapToLeaveTitleScreen"]
+    },
+    "XXL_TapToLeaveTitleScreen": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": ["TAP TO START"],
+                "roi": [
+                    227,
+                    1156,
+                    267,
+                    47
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    227,
+                    1156,
+                    267,
+                    47
+                ],
+                "target_offset": [
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            }
+        },
+        "next": [
+            "XXL_WaitRecommendScreen",
+            "XXL_WaitMainScreen"
+        ]
+    },
+    "XXL_WaitRecommendScreen": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "expected": ["今日不再显示"],
+                                "roi": [
+                                    321,
+                                    1197,
+                                    123,
+                                    30
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "expected": ["购买"],
+                                "roi": [
+                                    326,
+                                    967,
+                                    67,
+                                    36
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "action": "DoNothing",
+        "timeout": 120000,
+        "next": ["XXL_TapToDisableRecommendToday"]
+    },
+    "XXL_TapToDisableRecommendToday": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": ["今日不再显示"],
+                "roi": [
+                    321,
+                    1197,
+                    123,
+                    30
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    284,
+                    1199,
+                    24,
+                    24
+                ],
+                "target_offset": [
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            }
+        },
+        "next": ["XXL_TapToLeaveRecommendScreen"]
+    },
+    "XXL_TapToLeaveRecommendScreen": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": ["今日不再显示"],
+                "roi": [
+                    321,
+                    1197,
+                    123,
+                    30
+                ]
+            }
+        },
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    5,
+                    1194,
+                    61,
+                    40
+                ],
+                "target_offset": [
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            }
+        },
+        "next": ["XXL_WaitMainScreen"]
+    },
+    "XXL_WaitMainScreen": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "expected": ["公会"],
+                                "roi": [
+                                    149,
+                                    1063,
+                                    86,
+                                    47
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "expected": ["伙伴"],
+                                "roi": [
+                                    489,
+                                    1064,
+                                    83,
+                                    44
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "action": "DoNothing",
+        "timeout": 120000
     }
 }
