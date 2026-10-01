@@ -5,7 +5,11 @@
                 "/assets/resource/**/*.json",
                 "/install/resource/**/*.json",
                 "/assets/resource/**/*.jsonc",
-                "/install/resource/**/*.jsonc"
+                "/install/resource/**/*.jsonc",
+                "/assets/resource_*/**/*.json",
+                "/assets/resource_*/**/*.jsonc",
+                "/install/resource_*/**/*.json",
+                "/install/resource_*/**/*.jsonc"
             ],
             "url": "/deps/tools/pipeline.schema.json"
         },
@@ -47,5 +51,13 @@
     "[markdown]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
     }
 }
