@@ -80,8 +80,9 @@ PR 描述至少应包含以下信息：
 ```markdown
 ## 验证
 
-- [x] 执行 `npm ci && npx @nekosu/maa-tools check`
-- [x] 执行 `python tools/validate_schema.py --schema-dir deps/tools --resource-dirs assets/resource --exclude-dirs assets/resource/announcement --interface-files assets/interface.json`
+- [x] 执行 `npm ci` 和 `node tools/check/check_resources.mjs`
+- [x] 激活 `conda activate ./.conda` 后执行 `python -m tools.check.validate_schema --schema-dir deps/tools --exclude-dirs assets/resource/announcement --interface-files assets/interface.json`
+- [x] 在项目 Conda 环境中执行 `python -m unittest discover -s tests -v`
 - [x] 检查文档链接可正常跳转
 ```
 

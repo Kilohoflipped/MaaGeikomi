@@ -1,0 +1,5 @@
+json-with-comments==1.3.0
+jsonschema==4.26.0
+referencing==0.37.0
+maafw==5.14.2
+ruff==0.16.9

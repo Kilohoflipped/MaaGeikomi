@@ -5,19 +5,18 @@
 格式化器不是硬编码的。脚本从 VS Code 设置中读出 Python 的默认格式化器
 （先工作区，再 profile，最后用户级），再把它映射到一个 CLI，
 因此在编辑器里换格式化器也会同时换掉本脚本所用的格式化器。
-当扩展自带打包好的可执行文件时，优先使用它而不是解释器的模块，
-这样钩子跑的就是编辑器保存时所用的同一个二进制文件。
+使用当前 Python 环境中安装的 CLI，版本由根目录 requirements.txt 固定。
 
 规范化一个文件要跑两遍，因为 ``ruff format`` 从不重排 import：
 ``ruff check --select I --fix`` 先排好 import 块，
 随后 ``ruff format`` 给出最终版式。
 
-只用标准库，也不需要项目的虚拟环境：只要求 Python 3.10+，任何解释器都能运行。
+请在项目 Conda 环境中运行，以便使用与编辑器一致的 Ruff 版本。
 
 用法：
-    python tools/format_project.py --check
-    python tools/format_project.py --apply
-    python tools/format_project.py --apply --quiet     # 供钩子使用：只输出一行汇总
+    python -m tools.dev.format_project --check
+    python -m tools.dev.format_project --apply
+    python -m tools.dev.format_project --apply --quiet     # 供钩子使用：只输出一行汇总
 """
 
 from __future__ import annotations
@@ -30,42 +29,12 @@ import subprocess
 import sys
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[1]
+REPO = Path(__file__).resolve().parents[2]
 
-# VS Code 扩展 id -> 自带可执行文件名。优先使用自带的二进制文件，
-# 这样钩子在保存时运行的正是编辑器所用的那个二进制文件``ruff.importStrategy:useBundled``
-# 让这成为常态，也能避免 import 顺序来回震荡。
+# VS Code 扩展 id -> 当前 Python 环境中的 CLI 模块。
 FORMATTERS: dict[str, str] = {
     "charliermarsh.ruff": "ruff",
 }
-
-VSCODE_EXTENSIONS = Path.home() / ".vscode" / "extensions"
-
-
-def _extension_version(path: Path) -> tuple[int, ...]:
-    match = re.search(r"-(\d+(?:\.\d+)*)", path.name)
-    return tuple(int(part) for part in match.group(1).split(".")) if match else (0,)
-
-
-def bundled_executable(extension_id: str, name: str) -> str | None:
-    """VS Code 扩展自带的最新可执行文件，如果该扩展已安装的话。
-
-    只有普通文件才算数。扩展还会自带同名的*包*——ruff 的
-    ``bundled/libs/ruff`` 就是一个目录——而把目录交给 CreateProcess
-    会以 WinError 5 失败，所以 ``is_file`` 才是这里真正起作用的防护。
-
-    Returns:
-        自带可执行文件的路径；扩展未安装或没找到普通文件时返回 ``None``。
-    """
-    if not name:
-        return None
-    installs = [path for path in VSCODE_EXTENSIONS.glob(f"{extension_id}-*") if path.is_dir()]
-    for install in sorted(installs, key=_extension_version, reverse=True):
-        for suffix in (".exe", ""):
-            for candidate in sorted(install.glob(f"bundled/**/{name}{suffix}")):
-                if candidate.is_file():
-                    return str(candidate)
-    return None
 
 
 def formatter_steps(extension_id: str, files: list[str], *, check: bool) -> list[list[str]]:
@@ -79,8 +48,7 @@ def formatter_steps(extension_id: str, files: list[str], *, check: bool) -> list
     Returns:
         按执行先后排列的命令行参数列表；``check`` 为真时两遍都不改写文件。
     """
-    bundled = bundled_executable(extension_id, FORMATTERS[extension_id])
-    base = [bundled] if bundled else [sys.executable, "-m", "ruff"]
+    base = [sys.executable, "-m", FORMATTERS[extension_id]]
     settings = json.loads(
         _strip_jsonc((REPO / ".vscode" / "settings.json").read_text(encoding="utf-8"))
     )
@@ -202,7 +170,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"formatter : {extension_id}  ({FORMATTERS[extension_id]})")
         print(f"binary    : {steps[0][0]}")
         print(f"files     : {len(files)}")
-        print(f"steps     : {len(steps)}  ({' + '.join(step[1] for step in steps)})")
+        print(f"steps     : {len(steps)}  ({' + '.join(step[3] for step in steps)})")
         print(f"mode      : {'check' if args.check else 'apply'}")
         print(output)
     return failure

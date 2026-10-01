@@ -12,17 +12,18 @@ except ModuleNotFoundError as e:
         "Or add it to your project's requirements."
     ) from e
 
-from configure import configure_ocr_model
+from ..resources.configure_ocr import configure_ocr_model
+from ..resources.project_interface import resource_directories
 
 
-working_dir = Path(__file__).parent.parent.resolve()
+working_dir = Path(__file__).resolve().parents[2]
 install_path = working_dir / Path("install")
 version = len(sys.argv) > 1 and sys.argv[1] or "v0.0.1"
 
 # the first parameter is self name
 if sys.argv.__len__() < 4:
-    print("Usage: python install.py <version> <os> <arch>")
-    print("Example: python install.py v1.0.0 win x86_64")
+    print("Usage: python -m tools.build.install <version> <os> <arch>")
+    print("Example: python -m tools.build.install v1.0.0 win x86_64")
     sys.exit(1)
 
 os_name = sys.argv[2]
@@ -100,16 +101,14 @@ def install_deps():
 
 
 def install_resource():
-
+    interface_file = working_dir / "assets" / "interface.json"
+    directories = resource_directories(interface_file)
     configure_ocr_model()
 
-    shutil.copytree(
-        working_dir / "assets" / "resource",
-        install_path / "resource",
-        dirs_exist_ok=True,
-    )
+    for relative, source in directories.items():
+        shutil.copytree(source, install_path / relative, dirs_exist_ok=True)
     shutil.copy2(
-        working_dir / "assets" / "interface.json",
+        interface_file,
         install_path,
     )
 

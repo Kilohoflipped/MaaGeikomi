@@ -6,6 +6,7 @@ import argparse
 from pathlib import Path
 from jsonschema import Draft7Validator, Draft202012Validator
 from jsonschema.exceptions import ValidationError
+from ..resources.project_interface import resource_directories
 
 try:
     from referencing import Registry, Resource
@@ -214,15 +215,15 @@ def main():
     parser.add_argument(
         "--schema-dir",
         type=str,
-        default="tools/schema",
-        help="Directory containing schema files (default: tools/schema)",
+        default="deps/tools",
+        help="Directory containing schema files (default: deps/tools)",
     )
     parser.add_argument(
         "--resource-dirs",
         type=str,
         nargs="+",
-        default=["assets/resource"],
-        help="Directories containing resource files to validate (default: assets/resource)",
+        default=None,
+        help="Resource directories (default: all paths declared in --interface-files)",
     )
     parser.add_argument(
         "--exclude-dirs",
@@ -249,6 +250,16 @@ def main():
     args = parser.parse_args()
 
     all_valid = True
+    if args.resource_dirs is None:
+        try:
+            args.resource_dirs = list(dict.fromkeys(
+                source
+                for interface_file in args.interface_files
+                for source in resource_directories(interface_file).values()
+            ))
+        except (OSError, ValueError, KeyError) as e:
+            print(f"Resource discovery failed: {e}")
+            sys.exit(1)
 
     # 加载所有 schema 文件
     schema_dir = Path(args.schema_dir).resolve()
@@ -296,9 +307,8 @@ def main():
     for resource_dir in args.resource_dirs:
         resource_path = Path(resource_dir)
         if not resource_path.exists():
-            print(
-                f"Warning: Resource directory {resource_dir} does not exist, skipping..."
-            )
+            print(f"Error: Resource directory {resource_dir} does not exist")
+            all_valid = False
             continue
 
         for file_path in resource_path.rglob("*.json"):
@@ -329,9 +339,8 @@ def main():
                 if not validate_file(interface_path, interface_validator):
                     all_valid = False
             else:
-                print(
-                    f"Warning: Interface file {interface_file} does not exist, skipping..."
-                )
+                print(f"Error: Interface file {interface_file} does not exist")
+                all_valid = False
 
     # 验证 task 文件
     if args.task_dirs:

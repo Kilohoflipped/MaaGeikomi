@@ -40,10 +40,10 @@ _（本篇为编写基础指引，仅介绍 custom recognition 和 custom action
 
 本文将围绕仓库中附带的一个简单的 [demo](/agent) 示例进行讲解。
 
-在开始前，请确保你已经安装了 Python 依赖。
+在开始前，请按照[如何开发](./how_to_develop.md#python-开发环境)创建项目 Conda 环境。环境中已包含 MaaFramework Python SDK，在项目根目录激活即可：
 
 ```bash
-pip install MaaFw
+conda activate ./.conda
 ```
 
 > [!CAUTION]

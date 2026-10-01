@@ -1,0 +1,33 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "format: project",
+            "detail": "Format every project-owned Python file with the formatter VS Code is configured with (default build task -> Ctrl+Shift+B).",
+            "type": "process",
+            "command": "${workspaceFolder}/.conda/python.exe",
+            "args": [
+                "-m",
+                "tools.dev.format_project",
+                "--apply"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "PYTHONUTF8": "1"
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": true,
+                "echo": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}

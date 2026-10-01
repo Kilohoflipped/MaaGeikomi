@@ -6,24 +6,49 @@ on:
       - "**"
     paths:
       - ".github/workflows/check.yml"
+      - "environment.yml"
+      - "requirements.txt"
       - "assets/**"
       - "**.py"
+      - "tools/**"
+      - "tests/**"
+      - "deps/tools/**"
+      - "package*.json"
+      - "maatools.config.mts"
   pull_request:
     branches:
       - "**"
     paths:
       - ".github/workflows/check.yml"
+      - "environment.yml"
+      - "requirements.txt"
       - "assets/**"
       - "**.py"
+      - "tools/**"
+      - "tests/**"
+      - "deps/tools/**"
+      - "package*.json"
+      - "maatools.config.mts"
   workflow_dispatch:
 
 jobs:
   resource:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Use project Python environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          environment-file: environment.yml
+          activate-environment: maageikomi
+          auto-activate-base: false
 
       - name: Use Node
         uses: actions/setup-node@v4
@@ -33,14 +58,15 @@ jobs:
       - name: Run maa-checker
         run: |
           npm ci
-          npx @nekosu/maa-tools check
-
-      - name: Install maafw
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install --upgrade maafw --pre
+          node --test tests/test_checker_views.mjs
+          node tools/check/check_resources.mjs
 
       - name: Validate JSON Schema
         run: |
-          python -m pip install jsonschema==4.26.0 referencing==0.37.0
-          python tools/validate_schema.py --schema-dir deps/tools --resource-dirs assets/resource --exclude-dirs assets/resource/announcement --interface-files assets/interface.json
+          python -m tools.check.validate_schema --schema-dir deps/tools --exclude-dirs assets/resource/announcement --interface-files assets/interface.json
+
+      - name: Test resource packaging contract
+        run: |
+          python -m pip check
+          python -c "from maa.agent.agent_server import AgentServer"
+          python -m unittest discover -s tests -v

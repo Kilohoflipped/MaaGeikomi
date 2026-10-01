@@ -15,6 +15,8 @@ on:
       - "**"
     paths:
       - ".github/workflows/install.yml"
+      - "environment.yml"
+      - "requirements.txt"
       - "assets/**"
       - "**.py"
   pull_request:
@@ -22,6 +24,8 @@ on:
       - "**"
     paths:
       - ".github/workflows/install.yml"
+      - "environment.yml"
+      - "requirements.txt"
       - "assets/**"
       - "**.py"
   workflow_dispatch:
@@ -83,6 +87,14 @@ jobs:
         with:
           submodules: true
 
+      - name: Use project Python environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          environment-file: environment.yml
+          activate-environment: maageikomi
+          auto-activate-base: false
+
       - name: Download MaaFramework
         uses: robinraju/release-downloader@v1
         with:
@@ -120,7 +132,7 @@ jobs:
           rm -rf MFA/runtimes
       
       - name: Install
-        shell: bash
+        shell: bash -el {0}
         run: |
           if [[ "${{ matrix.os }}" != "android" ]]; then
             if [ -d "MFA" ]; then
@@ -135,10 +147,7 @@ jobs:
             echo "Skipping copy MFA for Android."
           fi
 
-          cd tools/
-          python -m pip install -r ./requirements.txt
-          python ./install.py ${{ needs.meta.outputs.tag }} ${{ matrix.os }} ${{ matrix.arch }}
-          cd ..
+          python -m tools.build.install ${{ needs.meta.outputs.tag }} ${{ matrix.os }} ${{ matrix.arch }}
 
       - uses: actions/upload-artifact@v4
         with:

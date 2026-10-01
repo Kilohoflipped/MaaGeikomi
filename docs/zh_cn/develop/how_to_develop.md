@@ -16,6 +16,51 @@
 3. 了解本框架中一些常见的术语  
   MaaFramework 手册中的 [术语解释](https://maafw.com/docs/1.2-ExplanationOfTerms) 章节介绍了一些基本的专有术语。  
 
+## Python 开发环境
+
+本项目使用 Conda 管理 Python 3.13。请先安装 Miniconda 或 Miniforge，然后在项目根目录创建环境：
+
+```powershell
+conda env create --prefix ./.conda --file environment.yml
+conda activate ./.conda
+python -m pip check
+```
+
+`environment.yml` 声明 Python 版本与环境变量，通过根目录的 `requirements.txt` 安装固定版本的 Python 依赖。`.conda/` 是本地环境目录，不进入 Git，也不打包给用户。CI 使用同一份声明创建名为 `maageikomi` 的环境。Node/npm 依赖仍由 `package-lock.json` 管理。
+
+更新依赖声明后，在项目根目录同步环境：
+
+```powershell
+conda env update --prefix ./.conda --file environment.yml
+```
+
+Python 主次版本与直接依赖版本已固定，但这不是完整的跨平台锁文件，间接依赖仍由安装器解析。
+
+VS Code 已配置 Windows 下的 `.conda/python.exe` 和环境内的 Ruff。如果编辑器曾记住其他解释器，请执行 `Python: Select Interpreter`，选择项目 `.conda/python.exe`。PyCharm 中也选择已有 Conda 环境的这个解释器。
+
+在激活环境的终端中执行检查：
+
+```powershell
+python -m tools.check.validate_schema --schema-dir deps/tools --interface-files assets/interface.json
+python -m unittest discover -s tests -v
+python -m tools.dev.format_project --check
+```
+
+VS Code 的 `format: project` 任务直接使用项目 `.conda/python.exe` 调用格式化脚本，不依赖终端当前激活的环境。Ruff 的命令行与编辑器均使用项目环境中的版本。
+
+若不激活环境，也可以用 `conda run --no-capture-output --prefix ./.conda python ...` 执行上述 Python 命令。Agent 开发依赖已包含在环境中；发布包中的 Agent 运行时仍需要独立配置。
+
+### 工具目录
+
+| 目录 | 职责 | 调用方式 |
+| --- | --- | --- |
+| `tools/build/` | 组装发布包 | `python -m tools.build.install <version> <os> <arch>` |
+| `tools/check/` | Schema 与 MaaFramework 资源检查 | `python -m tools.check.validate_schema`、`node tools/check/check_resources.mjs` |
+| `tools/resources/` | 解析资源目录、准备 OCR 模型 | `python -m tools.resources.configure_ocr` |
+| `tools/dev/` | 项目 Python 格式化 | `python -m tools.dev.format_project --check` |
+
+以上命令从项目根目录执行。Python 工具通过包内导入复用资源逻辑，无需修改 `sys.path`。打包前仍需准备好 `deps/` 中的 MaaFramework 原生库；OCR 配置需要已克隆的 MaaCommonAssets 子模块。
+
 ## 开发步骤
 
 0. 使用 [本项目主页](https://github.com/MaaXYZ/MaaPracticeBoilerplate) 右上角 `Use this template` - `Create a new repository` 来基于本模板创建您自己的项目。  

@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "nekosu.maa-support",
+        "ms-python.python",
         "davidanson.vscode-markdownlint",
         "charliermarsh.ruff",
         "esbenp.prettier-vscode"
