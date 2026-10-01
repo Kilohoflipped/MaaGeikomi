@@ -15,9 +15,9 @@
 只用标准库，也不需要项目的虚拟环境：只要求 Python 3.10+，任何解释器都能运行。
 
 用法：
-    python scripts/tools/format_project.py --check
-    python scripts/tools/format_project.py --apply
-    python scripts/tools/format_project.py --apply --quiet     # 供钩子使用：只输出一行汇总
+    python tools/format_project.py --check
+    python tools/format_project.py --apply
+    python tools/format_project.py --apply --quiet     # 供钩子使用：只输出一行汇总
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[1]
 
 # VS Code 扩展 id -> 自带可执行文件名。优先使用自带的二进制文件，
 # 这样钩子在保存时运行的正是编辑器所用的那个二进制文件``ruff.importStrategy:useBundled``
