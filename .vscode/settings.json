@@ -26,6 +26,13 @@
         },
         {
             "fileMatch": [
+                "/assets/interface_*.json",
+                "/install/interface_*.json"
+            ],
+            "url": "/deps/tools/interface_import.schema.json"
+        },
+        {
+            "fileMatch": [
                 "/install/config/maa_pi_config.json"
             ],
             "url": "/deps/tools/interface_config.schema.json"

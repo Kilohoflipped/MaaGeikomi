@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
+import argparse
 import json
 import sys
 import tempfile
-import argparse
 from pathlib import Path
+
 from jsonschema import Draft7Validator, Draft202012Validator
 from jsonschema.exceptions import ValidationError
-from ..resources.project_interface import resource_directories
+
+from ..resources.project_interface import interface_imports, resource_directories
 
 try:
-    from referencing import Registry, Resource
-    from referencing.jsonschema import DRAFT202012, DRAFT7
     import referencing.retrieval
+    from referencing import Registry, Resource
+    from referencing.jsonschema import DRAFT7, DRAFT202012
 
     HAS_REFERENCING = True
 except ImportError:
@@ -186,9 +188,7 @@ def create_validator(schema, schema_store):
 
         # 添加所有 schema 到 registry
         for uri, schema_content in schema_store.items():
-            resource = Resource.from_contents(
-                schema_content, default_specification=spec
-            )
+            resource = Resource.from_contents(schema_content, default_specification=spec)
             registry = registry.with_resource(uri, resource)
 
         return ValidatorClass(schema, registry=registry)
@@ -209,9 +209,7 @@ def create_validator(schema, schema_store):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Validate JSON/JSONC files against JSON Schema"
-    )
+    parser = argparse.ArgumentParser(description="Validate JSON/JSONC files against JSON Schema")
     parser.add_argument(
         "--schema-dir",
         type=str,
@@ -250,13 +248,26 @@ def main():
     args = parser.parse_args()
 
     all_valid = True
-    if args.resource_dirs is None:
-        try:
-            args.resource_dirs = list(dict.fromkeys(
+    try:
+        imported_files = list(
+            dict.fromkeys(
                 source
                 for interface_file in args.interface_files
-                for source in resource_directories(interface_file).values()
-            ))
+                for source in interface_imports(interface_file).values()
+            )
+        )
+    except (OSError, ValueError, KeyError) as e:
+        print(f"PI import discovery failed: {e}")
+        sys.exit(1)
+    if args.resource_dirs is None:
+        try:
+            args.resource_dirs = list(
+                dict.fromkeys(
+                    source
+                    for interface_file in args.interface_files
+                    for source in resource_directories(interface_file).values()
+                )
+            )
         except (OSError, ValueError, KeyError) as e:
             print(f"Resource discovery failed: {e}")
             sys.exit(1)
@@ -343,8 +354,8 @@ def main():
                 all_valid = False
 
     # 验证 task 文件
-    if args.task_dirs:
-        print("\nValidating task files...")
+    if imported_files or args.task_dirs:
+        print("\nValidating PI import files...")
         task_schema_path = schema_dir / "interface_import.schema.json"
         if task_schema_path.exists():
             task_schema = load_jsonc(task_schema_path)
@@ -353,12 +364,14 @@ def main():
 
             task_validator = create_validator(task_schema, schema_store)
 
+            for file_path in imported_files:
+                if not validate_file(file_path, task_validator):
+                    all_valid = False
+
             for task_dir in args.task_dirs:
                 task_path = Path(task_dir)
                 if not task_path.exists():
-                    print(
-                        f"Warning: Task directory {task_dir} does not exist, skipping..."
-                    )
+                    print(f"Warning: Task directory {task_dir} does not exist, skipping...")
                     continue
 
                 for file_path in task_path.rglob("*.json"):
@@ -369,9 +382,8 @@ def main():
                     if not validate_file(file_path, task_validator):
                         all_valid = False
         else:
-            print(
-                f"Warning: Task schema {task_schema_path} does not exist, skipping task validation..."
-            )
+            print(f"Error: Task schema {task_schema_path} does not exist")
+            all_valid = False
 
     if all_valid:
         print("\n✅ All validations passed!")

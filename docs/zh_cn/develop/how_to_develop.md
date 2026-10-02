@@ -56,10 +56,26 @@ VS Code 的 `format: project` 任务直接使用项目 `.conda/python.exe` 调�
 | --- | --- | --- |
 | `tools/build/` | 组装发布包 | `python -m tools.build.install <version> <os> <arch>` |
 | `tools/check/` | Schema 与 MaaFramework 资源检查 | `python -m tools.check.validate_schema`、`node tools/check/check_resources.mjs` |
-| `tools/resources/` | 解析资源目录、准备 OCR 模型 | `python -m tools.resources.configure_ocr` |
+| `tools/resources/` | 发现 PI 导入文件与资源目录、准备 OCR 模型 | `python -m tools.resources.configure_ocr`；PI 辅助模块由其他工具导入 |
 | `tools/dev/` | 项目 Python 格式化 | `python -m tools.dev.format_project --check` |
 
 以上命令从项目根目录执行。Python 工具通过包内导入复用资源逻辑，无需修改 `sys.path`。打包前仍需准备好 `deps/` 中的 MaaFramework 原生库；OCR 配置需要已克隆的 MaaCommonAssets 子模块。
+
+## 按游戏拆分 ProjectInterface
+
+`assets/interface.json` 保留项目信息、控制器、资源列表和分组，通过 `import` 按顺序读取同目录下的 `interface_xxl.json`、`interface_housamo.json`、`interface_lah.json` 和 `interface_crave.json`。现有 Housamo 声明仍只提供启动入口，尚未接入 MAH。
+
+每份游戏文件可以声明 `task`、`option` 和 `preset`。任务按主文件、导入列表的顺序追加；任务、选项和预设的名称使用游戏前缀，避免跨文件重名。游戏专用的任务和选项都要声明对应的 `resource` 限制；子选项也遵守这一约定，避免其 Pipeline 覆盖在其他游戏资源中生效。
+
+本项目当前只使用主文件直接导入的本地文件，不使用嵌套导入。`group` 等其他顶层字段继续留在主文件，因为现有检查工具对导入字段的支持范围尚不一致。导入路径相对于主 `interface.json`，统一使用 `/`，文件名采用扁平的 `interface_<游戏>.json` 形式。
+
+新增游戏文件时，先把它加入主文件的 `import` 列表。Schema 检查和打包都按这份列表发现文件：检查会拒绝缺失文件、重复导入和暂不支持的导入字段；打包保留原始文件及相对路径。VS Code 已为 `interface_*.json` 配置导入文件的 Schema。
+
+`check_resources.mjs` 在临时目录为各控制器和资源组合生成主接口与导入文件的检查视图，筛选不适用的任务、选项及预设任务。它不合并 PI 文件，也不实现节点引用解析；实际诊断和资源加载仍由 `maa-tools` 完成。原始发布文件不经过筛选。上述 Python Schema 命令会自动校验导入列表中的文件，无需另加目录参数。
+
+Node 工具通过 `tools/resources/project_interface.mjs` 的 `loadInterface()` 读取主文件和直接导入片段，返回 `{manifest, fragments}`。`manifest` 是主文件对象，`fragments` 按导入顺序保留每份文件的原始路径及对象。该模块参考 MaaFramework `MaaPiCli` 按主文件目录读取直接导入的流程，额外执行本项目的路径与片段字段约束；不复刻其 C++ 类型默认值、用户运行配置清理或选项合并行为。字段类型由 Schema 校验，检查视图中的导入由 `maa-tools` 解析。项目要求名称不重复，不依赖不同客户端对重名选项的覆盖规则。
+
+Python 的 `project_interface.py` 为 Schema 检查和打包提供同样范围的导入发现，返回文件路径供校验或复制；它与 Node 模块服务于不同工具入口。修改导入范围时，应同步两者的约束和测试。
 
 ## 开发步骤
 
@@ -86,7 +102,7 @@ VS Code 的 `format: project` 任务直接使用项目 `.conda/python.exe` 调�
 
     _如果希望使用其他版本的模型，可以参考 [这个说明](https://github.com/MaaXYZ/MaaCommonAssets/tree/main/OCR)。_
 
-3. 进行开发工作。请参考 [MaaFramework 相关文档](https://maafw.com/docs/1.1-QuickStarted)，并按您的业务需求修改 `assets` 目录下的 `resource` 资源文件以及 `interface.json` 文件，然后使用 [开发工具](https://maafw.com/docs/1.1-QuickStarted#%E8%B0%83%E8%AF%95) 进行调试。
+3. 进行开发工作。请参考 [MaaFramework 相关文档](https://maafw.com/docs/1.1-QuickStarted)，在对应的 `assets/resource_<游戏>/` 中编写资源，在 `assets/interface_<游戏>.json` 中声明任务和选项，再使用 [开发工具](https://maafw.com/docs/1.1-QuickStarted#%E8%B0%83%E8%AF%95) 调试。修改控制器、资源组合或分组时，编辑主 `assets/interface.json`。
 
     通常来说，您**不需要**为您的项目单独开发一套 UI，本模板附带了自动配置 _通用 UI_ 的持续集成（CI），使用方法请参考后续步骤。
 

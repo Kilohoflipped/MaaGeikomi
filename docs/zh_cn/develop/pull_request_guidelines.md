@@ -100,7 +100,7 @@ PR 描述至少应包含以下信息：
 ### 模板资源改动
 
 - 坐标、ROI、模板图片等资源应遵循 MaaFramework 的 720p 基准约定。
-- 新增任务或资源时，需要检查 `assets/interface.json`、`assets/resource` 与任务配置是否一致。
+- 新增任务或资源时，需要检查主 `assets/interface.json` 的导入列表、对应的 `assets/interface_<游戏>.json` 与 `assets/resource_<游戏>/` 是否一致。
 - 不要提交本地缓存、运行产物、调试截图或下载得到的大体积模型文件。
 - 修改 schema、资源目录或工作流时，需要说明对基于模板创建项目的影响。
 

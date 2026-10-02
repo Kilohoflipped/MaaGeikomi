@@ -70,56 +70,10 @@
             "label": "神绊的导师"
         }
     ],
-    // 节点命名统一使用 <游戏前缀>_ 前缀，公共节点使用 Common_ 前缀，避免资源包互相覆盖。
-    "task": [
-        {
-            "name": "XXL_StartUp",
-            "label": "启动XXL 猛汉特区",
-            "description": "启动游戏",
-            "entry": "XXL_LaunchApp",
-            "group": [
-                "xxl"
-            ],
-            "default_check": false,
-            "resource": [
-                "XXL"
-            ]
-        },
-        {
-            "name": "Housamo_StartUp",
-            "label": "启动东京放课后召唤师",
-            "description": "启动游戏",
-            "entry": "Housamo_StartUp",
-            "group": [
-                "housamo"
-            ],
-            "resource": [
-                "Housamo"
-            ]
-        },
-        {
-            "name": "LAH_StartUp",
-            "label": "启动Live A Hero",
-            "description": "启动游戏",
-            "entry": "LAH_StartUp",
-            "group": [
-                "lah"
-            ],
-            "resource": [
-                "LAH"
-            ]
-        },
-        {
-            "name": "Crave_StartUp",
-            "label": "启动神绊的导师",
-            "description": "启动游戏",
-            "entry": "Crave_StartUp",
-            "group": [
-                "crave"
-            ],
-            "resource": [
-                "Crave"
-            ]
-        }
+    "import": [
+        "./interface_xxl.json",
+        "./interface_housamo.json",
+        "./interface_lah.json",
+        "./interface_crave.json"
     ]
 }

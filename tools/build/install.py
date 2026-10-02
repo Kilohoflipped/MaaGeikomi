@@ -1,7 +1,6 @@
-from pathlib import Path
-
 import shutil
 import sys
+from pathlib import Path
 
 try:
     import jsonc
@@ -13,8 +12,7 @@ except ModuleNotFoundError as e:
     ) from e
 
 from ..resources.configure_ocr import configure_ocr_model
-from ..resources.project_interface import resource_directories
-
+from ..resources.project_interface import interface_imports, resource_directories
 
 working_dir = Path(__file__).resolve().parents[2]
 install_path = working_dir / Path("install")
@@ -99,14 +97,18 @@ def install_deps():
         )
 
 
-
 def install_resource():
     interface_file = working_dir / "assets" / "interface.json"
     directories = resource_directories(interface_file)
+    imports = interface_imports(interface_file)
     configure_ocr_model()
 
     for relative, source in directories.items():
         shutil.copytree(source, install_path / relative, dirs_exist_ok=True)
+    for relative, source in imports.items():
+        destination = install_path / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
     shutil.copy2(
         interface_file,
         install_path,

@@ -1,0 +1,12 @@
+{
+    "task": [
+        {
+            "name": "LAH_StartUp",
+            "label": "启动Live A Hero",
+            "description": "启动游戏",
+            "entry": "LAH_StartUp",
+            "group": ["lah"],
+            "resource": ["LAH"]
+        }
+    ]
+}
