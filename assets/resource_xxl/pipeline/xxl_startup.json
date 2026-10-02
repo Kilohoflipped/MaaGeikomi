@@ -14,46 +14,58 @@
                 "package": "com.nightfun.xxlwoofia"
             }
         },
-        "next": ["XXL_WaitTitleScreen"]
+        "next": [
+            "XXL_WaitSkipDisappear",
+            "XXL_WaitTitleScreen"
+        ]
+    },
+    "XXL_WaitSkipDisappear": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": ["XXL_Screen_Skip"]
+            }
+        },
+        "action": "DoNothing",
+        "post_delay": 500,
+        "next": [
+            "XXL_WaitSkipDisappear",
+            "XXL_WaitTitleScreen"
+        ]
     },
     "XXL_WaitTitleScreen": {
         "recognition": {
-            "type": "OCR",
+            "type": "And",
             "param": {
-                "expected": ["TAP TO START"],
-                "roi": [
-                    227,
-                    1156,
-                    267,
-                    47
+                "all_of": [
+                    "XXL_Screen_Title"
                 ]
             }
         },
         "action": "DoNothing",
-        "timeout": 120000,
-        "next": ["XXL_TapToLeaveTitleScreen"]
+        "next": [
+            "XXL_WaitSkipDisappear",
+            "XXL_TapToLeaveTitleScreen"
+        ]
     },
     "XXL_TapToLeaveTitleScreen": {
         "recognition": {
-            "type": "OCR",
+            "type": "And",
             "param": {
-                "expected": ["TAP TO START"],
-                "roi": [
-                    227,
-                    1156,
-                    267,
-                    47
+                "all_of": [
+                    "XXL_Screen_Title"
                 ]
             }
         },
+        "max_hit": 3,
         "action": {
             "type": "Click",
             "param": {
                 "target": [
-                    227,
-                    1156,
-                    267,
-                    47
+                    230,
+                    1160,
+                    259,
+                    37
                 ],
                 "target_offset": [
                     0,
@@ -64,6 +76,104 @@
             }
         },
         "next": [
+            "XXL_TapToLeaveTitleScreen",
+            "XXL_WaitEventSignInScreen",
+            "XXL_WaitDailySignInScreen",
+            "XXL_WaitRecommendScreen",
+            "XXL_WaitMainScreen"
+        ]
+    },
+    "XXL_WaitEventSignInScreen": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "XXL_Screen_EventSignIn"
+                ]
+            }
+        },
+        "action": "DoNothing",
+        "next": [
+            "XXL_TapToLeaveEventSignInScreen"
+        ]
+    },
+    "XXL_TapToLeaveEventSignInScreen": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "XXL_Screen_EventSignIn"
+                ]
+            }
+        },
+        "max_hit": 3,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    293,
+                    1071,
+                    135,
+                    35
+                ],
+                "target_offset": [
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            }
+        },
+        "next": [
+            "XXL_TapToLeaveEventSignInScreen",
+            "XXL_WaitDailySignInScreen",
+            "XXL_WaitRecommendScreen",
+            "XXL_WaitMainScreen"
+        ]
+    },
+    "XXL_WaitDailySignInScreen": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "XXL_Screen_DailySignIn"
+                ]
+            }
+        },
+        "action": "DoNothing",
+        "next": [
+            "XXL_TapToLeaveDailySignInScreen"
+        ]
+    },
+    "XXL_TapToLeaveDailySignInScreen": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "XXL_Screen_DailySignIn"
+                ]
+            }
+        },
+        "max_hit": 3,
+        "action": {
+            "type": "Click",
+            "param": {
+                "target": [
+                    136,
+                    987,
+                    448,
+                    30
+                ],
+                "target_offset": [
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            }
+        },
+        "next": [
+            "XXL_TapToLeaveDailySignInScreen",
             "XXL_WaitRecommendScreen",
             "XXL_WaitMainScreen"
         ]
@@ -73,51 +183,21 @@
             "type": "And",
             "param": {
                 "all_of": [
-                    {
-                        "recognition": {
-                            "type": "OCR",
-                            "param": {
-                                "expected": ["今日不再显示"],
-                                "roi": [
-                                    321,
-                                    1197,
-                                    123,
-                                    30
-                                ]
-                            }
-                        }
-                    },
-                    {
-                        "recognition": {
-                            "type": "OCR",
-                            "param": {
-                                "expected": ["购买"],
-                                "roi": [
-                                    326,
-                                    967,
-                                    67,
-                                    36
-                                ]
-                            }
-                        }
-                    }
+                    "XXL_Screen_Recommend"
                 ]
             }
         },
         "action": "DoNothing",
-        "timeout": 120000,
-        "next": ["XXL_TapToDisableRecommendToday"]
+        "next": [
+            "XXL_TapToDisableRecommendToday"
+        ]
     },
     "XXL_TapToDisableRecommendToday": {
         "recognition": {
-            "type": "OCR",
+            "type": "And",
             "param": {
-                "expected": ["今日不再显示"],
-                "roi": [
-                    321,
-                    1197,
-                    123,
-                    30
+                "all_of": [
+                    "XXL_Screen_Recommend"
                 ]
             }
         },
@@ -138,21 +218,20 @@
                 ]
             }
         },
-        "next": ["XXL_TapToLeaveRecommendScreen"]
+        "next": [
+            "XXL_TapToLeaveRecommendScreen"
+        ]
     },
     "XXL_TapToLeaveRecommendScreen": {
         "recognition": {
-            "type": "OCR",
+            "type": "And",
             "param": {
-                "expected": ["今日不再显示"],
-                "roi": [
-                    321,
-                    1197,
-                    123,
-                    30
+                "all_of": [
+                    "XXL_Screen_Recommend"
                 ]
             }
         },
+        "max_hit": 3,
         "action": {
             "type": "Click",
             "param": {
@@ -170,45 +249,20 @@
                 ]
             }
         },
-        "next": ["XXL_WaitMainScreen"]
+        "next": [
+            "XXL_TapToLeaveRecommendScreen",
+            "XXL_WaitMainScreen"
+        ]
     },
     "XXL_WaitMainScreen": {
         "recognition": {
             "type": "And",
             "param": {
                 "all_of": [
-                    {
-                        "recognition": {
-                            "type": "OCR",
-                            "param": {
-                                "expected": ["公会"],
-                                "roi": [
-                                    149,
-                                    1063,
-                                    86,
-                                    47
-                                ]
-                            }
-                        }
-                    },
-                    {
-                        "recognition": {
-                            "type": "OCR",
-                            "param": {
-                                "expected": ["伙伴"],
-                                "roi": [
-                                    489,
-                                    1064,
-                                    83,
-                                    44
-                                ]
-                            }
-                        }
-                    }
+                    "XXL_Screen_Main"
                 ]
             }
         },
-        "action": "DoNothing",
-        "timeout": 120000
+        "action": "DoNothing"
     }
 }

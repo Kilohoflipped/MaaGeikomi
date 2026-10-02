@@ -1,0 +1,201 @@
+{
+    "XXL_Screen_Skip": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": "[sS][kK][iI][pP]",
+                "roi": [
+                    27,
+                    79,
+                    57,
+                    29
+                ]
+            }
+        },
+        "action": "DoNothing"
+    },
+    "XXL_Screen_Title": {
+        "recognition": {
+            "type": "OCR",
+            "param": {
+                "expected": [
+                    "TAP TO START"
+                ],
+                "roi": [
+                    230,
+                    1160,
+                    259,
+                    37
+                ]
+            }
+        },
+        "action": "DoNothing"
+    },
+    "XXL_Screen_EventSignIn": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    {
+                        "recognition": {
+                            "type": "TemplateMatch",
+                            "param": {
+                                "template": [
+                                    "EventSignInScreenClockIcon.png"
+                                ],
+                                "green_mask": true,
+                                "roi": [
+                                    282,
+                                    1063,
+                                    158,
+                                    54
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "expected": [
+                                    "剩余\\s*[0-9]+\\s*天"
+                                ],
+                                "roi": [
+                                    282,
+                                    1063,
+                                    158,
+                                    54
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "action": "DoNothing"
+    },
+    "XXL_Screen_DailySignIn": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "expected": "签到奖励",
+                                "roi": [
+                                    412,
+                                    265,
+                                    194,
+                                    101
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "expected": "08",
+                                "roi": [
+                                    496,
+                                    823,
+                                    85,
+                                    56
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "action": "DoNothing"
+    },
+    "XXL_Screen_Recommend": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "expected": [
+                                    "今日不再显示"
+                                ],
+                                "roi": [
+                                    321,
+                                    1197,
+                                    123,
+                                    30
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "expected": [
+                                    "购买"
+                                ],
+                                "roi": [
+                                    326,
+                                    967,
+                                    67,
+                                    36
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "action": "DoNothing"
+    },
+
+    "XXL_Screen_Main": {
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    {
+                        "recognition": {
+                            "type": "OCR",
+                            "param": {
+                                "expected": [
+                                    "SESSION"
+                                ],
+                                "roi": [
+                                    169,
+                                    1156,
+                                    75,
+                                    17
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "recognition": {
+                            "type": "TemplateMatch",
+                            "param": {
+                                "template": [
+                                    "MainScreenSummonIcon.png"
+                                ],
+                                "green_mask": true,
+                                "roi": [
+                                    568,
+                                    1151,
+                                    69,
+                                    81
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "action": "DoNothing"
+    }
+}
